@@ -3,8 +3,7 @@ import numpy as np
 import pandas as pd
 import requests
 from datetime import datetime
-
-
+from streamlit import *
 
 def login():
     """
@@ -15,34 +14,18 @@ def login():
     if len(username_input) > 0:
         input_pass = st.text_input('Password:')
         if len(input_pass) > 0:
-                if st.button('Login'):
-                    login = {'username': username_input, 'password': input_pass }
+                login = {'username': username_input, 'password': input_pass }
+                response = requests.post("https://coachdapi.herokuapp.com/login", json=login)
+                st.success("Welcome {}".format(username_input))
+                status = st.radio("Select Actions: ", ('Create Feeling', 'My Feelings'))
+                if (status == 'Create Feeling'):
+                    st.info("Evaluate your feelings!")
 
-                    response = requests.post("https://coachdapi.herokuapp.com/login", json=login)
-                    if not response:
-                        st.write("no user exists")
-                        if st.button('Créer un compte'):
-                            next(create_user())
-                    else:
-                        st.write("Welcome {}".format(username_input))
-                        PAGES = {
-                            "App1": app1,
-                            "App2": app2
-                        }
-                        st.sidebar.title('Navigation')
-                        selection = st.sidebar.radio("Go to", list(PAGES.keys()))
-                        page = PAGES[selection]
-                        page
+                else:
+                    st.info("Discover all your Feelings")
+        else:
+            st.error("user not registered!")
 
-# app1.py
-def app1():
-    st.title('APP1')
-    st.write('Welcome to app1')
-
-# app2.py
-def app2():
-    st.title('APP2')
-    st.write('Welcome to app2')
 
 def create_user():
     """
@@ -51,18 +34,76 @@ def create_user():
     """
     input_name = st.text_input('Name:')
     if len(input_name) > 0:
-        input_role = st.text_input('Rôle:')
-        if len(input_role) > 0:
-            st.write("choose between user or admin!")
-        if input_role != 'user' or 'admin':
-            input_password = st.text_input('Pass:')
-            if len(input_password) > 0:
-                # if st.button('create user'):
-                    user = {'username': input_name, 'role': input_role, 'password': input_password}
-                    response = requests.post("https://coachdapi.herokuapp.com/users/", json=user)
-                    print(response.text)
-                    # if not response:
-                    #     st.write("request failed")
-                    # else:
-                    #     st.write("compte crée avec succès!")
-                    st.write("Welcome {} to your board".format(input_name))
+        input_password = st.text_input('Pass:')
+        if len(input_password) > 0:
+                user = {'username': input_name, 'password': input_password}
+                response = requests.post("https://coachdapi.herokuapp.com/users/", json=user)
+
+
+def create_feeling():
+    input_feeling = st.text_input('How do you feel?')
+    if len(input_feeling) > 0:
+        feeling = {'description': input_feeling}
+        response = requests.post("https://coachdapi.herokuapp.com/feelings/", json=feeling)
+        print(response.text)
+        feeling = response.json()
+        # display original informatiosn about customer
+        st.write('score:', feeling['score'])
+        st.write('description:', feeling['description'])
+
+def display_feeling_by_cust(user_id: int):
+    """
+    display the list of all the texts writen by one customer
+    :param id_customer: int, id of the customer choosen
+    :return: none
+    """
+    # request to api to get the list of the texts written by one customer
+    response = requests.get("https://coachdapi.herokuapp.com/feelings/{}".format(user_id))
+    if response:
+        feelings = response.json()
+        if len(feelings) > 0:
+            for feeling in feelings:
+                # call to api to get the customer writer of thoses texts
+                result = requests.get("https://coachdapi.herokuapp.com/feelings/{}".format(feeling['user_id']))
+                if result:
+                    user = result.json()
+                    st.write('Feeling Id: ', feeling['id'])
+                    st.write('User: {} {} '.format(user['username'], user['user_id']))
+                    st.write('Score: ', feeling['score'])
+                    st.write('------------------------------------------------')
+        else:
+            st.write("this customer has not yet writen texts")
+
+
+
+# def get_feeling():
+#     url = f"https://coachdapi.herokuapp.com/feelings/{'user_id'}"
+#     res = requests.get(url)
+#     if res:
+#         st.info(res)
+
+
+def display_user_by_id(user_id):
+    """
+    request api to get one customer by its id, and display
+    :param id: int (id of the customer we want to display)
+    :return: none
+    """
+    response = requests.get(" http://127.0.0.1:8000/users/{}".format(user_id))
+    if not response:
+        st.write('No Data!')
+    else:
+        user = response.json()
+        st.write('Name: ', user['name'])
+
+def display_all_user():
+    """
+    request api for the list of all customers, and display it
+    :return:none
+    """
+    response = requests.get("https://coachdapi.herokuapp.com/users/")
+    print(response.text)
+    users = response.json()
+    for user in users:
+        st.write(user)
+        st.write('---------------------------------------')
