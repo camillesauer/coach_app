@@ -117,10 +117,7 @@ numpy==1.19.5
 oauthlib==3.1.0
 olefile==0.46
 openpyxl==3.0.3
-opt-einsum==3.3.0
-optional-django==0.1.0
-orjson==3.5.3
-packaging==20.3
+
 pandas==0.25.3
 pandocfilters==1.4.2
 parso==0.5.2
@@ -191,10 +188,7 @@ spacy-alignments==0.8.3
 spacy-legacy==3.0.5
 spacy-streamlit==1.0.0
 spacy-transformers==1.0.2
-spacytextblob==3.0.1
-SQLAlchemy==1.4.2
-srsly==2.4.1
-starlette==0.14.2
+
 streamlit==0.84.1
 systemd-python==234
 tables==3.6.1
