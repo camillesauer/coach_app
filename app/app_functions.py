@@ -1,9 +1,10 @@
 import streamlit as st
 import requests
 import pandas as pd
+import numpy as np
 import json
 import asyncio
-
+import plotly.express as px
 
 def set_header():
     # Initialization
@@ -79,4 +80,5 @@ def get_feeling():
             st.dataframe(feelings)
             # st.table(feelings.iloc[0:10])
             # st.json(feelings)
-
+            st.subheader('Evolution of your scores')
+            st.bar_chart(feelings)
