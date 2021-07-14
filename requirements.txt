@@ -1,3 +1,2 @@
 afinn==0.1
-pandas==0.25.3
 streamlit==0.84.1
