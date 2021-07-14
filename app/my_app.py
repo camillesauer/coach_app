@@ -1,9 +1,6 @@
 
 from app_functions import  *
 import streamlit as st
-import pickle as pkle
-import os.path
-
 
 # will use this list and next button to increment page, MUST BE in the SAME order
 # as the list passed to the radio button
@@ -37,7 +34,6 @@ if choice == 'Coach':
     selection = st.selectbox("Action",
                              ["Choose action", "Display all users", "Display list of texts", "Display a text",
                               "Delete a user"])
-
 
 m = st.markdown("""
 <style>

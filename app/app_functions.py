@@ -1,12 +1,12 @@
 import streamlit as st
 import requests
-import pandas as pd
-import numpy as np
-import json
-import asyncio
-import plotly.express as px
+
 
 def set_header():
+    """
+    permit to replace header with tokens for user session
+    :return: token
+    """
     # Initialization
     if 'token' not in st.session_state:
         return
@@ -59,6 +59,10 @@ def create_user():
 
 
 def create_feeling():
+    """
+    Permit to create a score for emotional analysis
+    :return: score and description
+    """
     input_feeling = st.text_input('How do you feel?')
     if len(input_feeling) > 0:
         feeling = {'description': input_feeling}
@@ -72,6 +76,10 @@ def create_feeling():
 
 
 def get_feeling():
+    """
+    Load all user feelings
+    :return:feelings
+    """
     response = requests.get("https://coachdapi.herokuapp.com/feelings", headers=set_header())
     if response:
         feelings = response.json()
