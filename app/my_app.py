@@ -7,11 +7,11 @@ import os.path
 
 # will use this list and next button to increment page, MUST BE in the SAME order
 # as the list passed to the radio button
-new_choice = ['Home','Coach','User']
+new_choice = ['Home','Coach']
 
 
 # create your radio button with the index that we loaded
-choice = st.sidebar.radio("Menu",('Home','User','Coach'))
+choice = st.sidebar.radio("Menu",('Home','Coach'))
 
 
 # finally get to whats on each page
